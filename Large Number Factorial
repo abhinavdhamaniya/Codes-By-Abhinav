@@ -1,0 +1,137 @@
+#include <iostream>
+#include<sstream>
+using namespace std;
+
+int nd(int x)
+{
+    int count=0;
+    while(x!=0)
+    {
+        x/=10;
+        count++;
+    }
+    return count;
+}
+
+int fd(int x)
+{
+    int d=0;
+    while(x!=0)
+    {
+        d=x%10;
+        x/=10;
+    }
+    return d;
+}
+
+
+string ssum(string n1, string n2)
+{
+    if(n1=="")return n2;
+
+    if(n1.length()<n2.length())
+    {
+        n1.insert(0,"0");
+    }
+    else if(n2.length()<n1.length())
+    {
+        n2.insert(0,"0");
+    }
+
+    string res="";
+    string sum;
+    int carry=0;
+
+    for(int i=n1.length()-1; i>=0; i--)
+    {
+        int d1= stoi(n1.substr(i,1));
+        int d2= stoi(n2.substr(i,1));
+
+        int sumint= d1+d2+carry;
+
+        if(nd(sumint)==2)
+        {
+            carry= fd(sumint);
+            sumint= sumint%10;
+            stringstream ss;
+            ss<<sumint;
+            ss>>sum;
+            res.insert(0,sum);
+        }
+
+        else
+        {
+            carry=0;
+            stringstream ss;
+            ss<<sumint;
+            ss>>sum;
+            res.insert(0,sum);
+        }
+
+    }
+
+    return res;
+}
+
+string smul(string s1, string s2)
+{
+    if(s1=="")return s2;
+    string n1=s1;
+    string n2=s2;
+    string jsum="";
+    string netsum="";
+    int zeroci=0;
+    int zerocj=0;
+
+    for(int i=n1.length()-1; i>=0; i--)
+    {
+        zerocj=0;
+        jsum="";
+        for(int j=n2.length()-1; j>=0; j--)
+        {
+            int d1= stoi(n1.substr(i,1));
+            int d2= stoi(n2.substr(j,1));
+            int mul= d1*d2;
+            stringstream ss;
+            ss<<mul;
+            string muls;
+            ss>>muls;
+            for(int k=0; k<zerocj; k++)
+            {
+                muls.append("0");
+            }
+
+            jsum= ssum(jsum, muls);
+            zerocj++;
+
+        }
+        for(int k=0; k<zeroci; k++)
+        {
+            jsum.append("0");
+        }
+        zeroci++;
+        netsum= ssum(netsum,jsum);
+    }
+    return netsum;
+}
+
+int main()
+{
+    string num;
+    cout<<"Enter number: ";
+    cin>>num;
+    string res="";
+    for(int i=1; i<=stoi(num); i++)
+    {
+        stringstream ss;
+        ss<<i;
+        string m;
+        ss>>m;
+
+        res= smul(res,m);
+
+    }
+
+    cout<<res;
+
+}
