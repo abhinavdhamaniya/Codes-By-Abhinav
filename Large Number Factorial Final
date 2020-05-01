@@ -1,0 +1,159 @@
+#include <iostream>
+using namespace std;
+
+string add(string s1, string s2)
+{
+    if(s2.length()<s1.length())
+    {
+        while(s2.length()!=s1.length())
+        {
+            s2= "0"+s2;
+        }
+    }
+    else if(s2.length()>s1.length())
+    {
+        while(s2.length()!=s1.length())
+        {
+            s1= "0"+s1;
+        }
+    }
+
+    int sum=0;
+    bool carry=false;
+    string res="";
+    for(int i=s2.length()-1; i>=0; i--)
+    {
+        sum= (s2[i]-'0')+(s1[i]-'0');
+        if(carry)
+        {
+            sum+=1;
+            carry=false;
+        }
+        if(sum>9)
+        {
+            carry=true;
+            string ssum= to_string(sum);
+            res= ssum.substr(1,1)+res;
+        }
+        else
+        {
+            res= to_string(sum)+res;
+        }
+    }
+    if(carry) res="1"+res;
+    return res;
+}
+
+string multiply(string s1, string s2)
+{
+    string finalres="";
+
+    if(s1.length()<s2.length())
+    {
+        string temp=s1;
+        s1=s2;
+        s2=temp;
+    }
+
+    for(int i=0; i<s1.length(); i++)
+    {
+        if(s1[i]=='0')
+        {
+            s1= s1.substr(i+1, s1.length()-i);
+        }
+        else break;
+    }
+
+    for(int i=0; i<s2.length(); i++)
+    {
+        if(s2[i]=='0')
+        {
+            s2= s2.substr(i+1, s2.length()-i);
+        }
+        else break;
+    }
+
+    for(int i=0; i<s1.length(); i++)
+    {
+        if(s1[i]=='0')
+        {
+            s1= s1.substr(i+1, s1.length()-i);
+        }
+        else break;
+    }
+
+    for(int i=0; i<s2.length(); i++)
+    {
+        if(s2[i]=='0')
+        {
+            s2= s2.substr(i+1, s2.length()-i);
+        }
+        else break;
+    }
+    //cout<<s1<<endl<<s2<<endl;
+
+    string zeroadd="";
+    for(int i=s2.length()-1; i>=0; i--)
+    {
+        string mid="";
+        int carry=0;
+
+
+        for(int j=s1.length()-1; j>=0; j--)
+        {
+            int mul= (s1[j]-'0')*(s2[i]-'0');
+
+            mul+=carry;
+            carry=0;
+
+            if(mul>9)
+            {
+                string smul= to_string(mul);
+                carry= stoi(smul.substr(0,1));
+                mid= smul.substr(1,1)+mid;
+            }
+            else
+            {
+                mid= to_string(mul)+mid;
+            }
+
+        }
+        if(carry!=0)
+        {
+            string temp= to_string(carry);
+            mid= temp+mid;
+        }
+
+        mid+= zeroadd;
+
+        zeroadd+="0";
+        if(finalres=="")
+        {
+            finalres=add("0", mid);
+        }
+        else finalres=add(finalres, mid);
+    }
+    return finalres;
+}
+
+string fact(string num)
+{
+    string res="1";
+    for(int i=stoi(num); i>=1; i--)
+    {
+        int temp=i;
+        string stemp= to_string(temp);
+        res= multiply(res, stemp);
+    }
+    return res;
+}
+
+int main() {
+	int t; cin>>t;
+	while(t--)
+	{
+	    int n; cin>>n;
+	    string num= to_string(n);
+	    cout<<fact(num)<<endl;
+	}
+}
